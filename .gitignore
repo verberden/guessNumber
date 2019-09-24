@@ -1,0 +1,11 @@
+node_modules/
+public/assets
+public/system
+public/uploads
+logs/
+log/
+tmp/
+.vscode/*
+
+config/secrets.js
+.env
