@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-module.exports = ({ config }) => {
+module.exports = ({ env, config }) => {
   const data = {};
 
   Object.keys(config).map((name) => {
@@ -10,8 +10,10 @@ module.exports = ({ config }) => {
       const options = {
         host: db.host,
         dialect: db.dialect,
-        logging: false,
       };
+
+
+      if (env !== 'development') options.logging = false;
 
       const sequelize = new Sequelize(db.database, db.user, db.password, options);
 

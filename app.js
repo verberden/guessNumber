@@ -13,6 +13,7 @@ const Router = require('./config/router');
 const config = require('./config');
 
 const app = express();
+const env = process.env.NODE_ENV === undefined ? 'development' : process.env.NODE_ENV;
 app.set('views', path.join(__dirname, 'web', 'views'));
 app.set('view engine', 'pug');
 
@@ -57,13 +58,12 @@ app.use(
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true },
   }),
 );
 app.use(csrf());
 const libs = require('./libs');
 
-const dbs = libs.db({ config: config.databases });
+const dbs = libs.db({ env, config: config.databases });
 
 const models = require('./web/models')({ dbs, logger });
 
