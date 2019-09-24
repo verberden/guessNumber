@@ -4,6 +4,7 @@
   "description": "Guess the number :)",
   "scripts": {
     "start": "nodemon --inspect ./bin/server",
+    "production": "NODE_ENV=production node ./bin/server",
     "eslint": "./node_modules/.bin/eslint ./"
   },
   "author": "Sergey N.",
