@@ -17,25 +17,27 @@ const env = process.env.NODE_ENV === undefined ? 'development' : process.env.NOD
 app.set('views', path.join(__dirname, 'web', 'views'));
 app.set('view engine', 'pug');
 
-const appClientFiles = [
-  'public/src/modal-check-results.js',
-  'public/src/modal-results-new.js',
-];
-const codeObject = {};
-appClientFiles.forEach((pathName) => {
-  const code = fs.readFileSync(pathName, 'utf8');
-  codeObject[`${path.basename(pathName)}`] = code;
-});
+if (env === 'development') {
+  const appClientFiles = [
+    'public/src/modal-check-results.js',
+    'public/src/modal-results-new.js',
+  ];
+  const codeObject = {};
+  appClientFiles.forEach((pathName) => {
+    const code = fs.readFileSync(pathName, 'utf8');
+    codeObject[`${path.basename(pathName)}`] = code;
+  });
 
-const uglified = uglifyJs.minify(codeObject, { compress: false });
+  const uglified = uglifyJs.minify(codeObject, { compress: false });
 
-fs.writeFile('public/js/app.min.js', uglified.code, (err) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log('Script generated and saved:', 'app.min.js');
-  }
-});
+  fs.writeFile('public/js/app.min.js', uglified.code, (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Script generated and saved:', 'app.min.js');
+    }
+  });
+}
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
