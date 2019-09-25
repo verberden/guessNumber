@@ -1,0 +1,28 @@
+extends ../layout
+include ../common/_pagination
+
+block content
+  .container
+    .pb-2.mt-4.border-bottom
+      h1= title
+    .mt-3
+      if results.entries.length
+        +pagination(results, { maxBtnCount: 5 })
+        .summary 
+          | Показано записей 
+          b= results.entries.length
+          |  из 
+          b= results.count
+        table.table.table-bordered.text-center
+          thead.thead-light
+          tr
+              th Имя
+              th Количество попыток
+          tbody
+            each result in results.entries
+              tr
+                td.align-middle= result.name
+                td.align-middle= result.attempts
+      else 
+        .text-center
+          | Таблица результатов пуста.

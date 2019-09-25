@@ -1,0 +1,19 @@
+input(type='hidden', name='_csrf', value=csrfToken)
+.row.justify-content-center
+  .col-12.col-md-2
+    .form-group
+      label.control-label.font-weight-bold(for="guess-number-input") Введите число
+      input#guess-number-input.form-control.input__number(
+        maxlength="4",
+        type="text",
+        name="guessNumber",
+        value=''
+      )
+.row.justify-content-center.d-none
+  .col-12.col-md-2
+    .form-group
+      label.control-label.font-weight-bold(for="check-results") Результат
+      input#check-results.form-control.input__number.input__number_check(
+      maxlength="4",
+      type="text",
+      )

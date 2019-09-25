@@ -2,4 +2,39 @@ extends ../layout
 
 block content
   h1= title
-  p Set number #{setNumber}
+  form#form-check(action=`/check`, method="POST", enctype="multipart/form-data")
+    include _form
+    .row.justify-content-center
+      .col-12.col-md-9
+        fieldset
+          legend Обозначения
+          p "В" - цифра присутствует в загаданном числе, и она стоит на верном месте,
+          p "K" - цифра присутствует, но она стоит не на том месте,
+          p "X" - цифра отсутсвует в загаданном числе.
+    .row.justify-content-center
+      .col-12.col-md-3
+        .form-group
+          button.btn.btn-success(type="submit") Проверить
+          | 
+          a.btn.btn-light(href="/generate") Загадать новое
+  #result-new-modal.modal.fade(role="dialog")
+    .modal-dialog.modal-lg(role="document")
+      .modal-content
+        .modal-header
+          h3.modal-title Сохранение результата
+          button(
+            type="button",
+            class="close",
+            data-dismiss="modal",
+            aria-label="Close"
+          )
+            span(aria-hidden="true") &times;
+        .modal-body
+          .alert.alert-success.d-none(role="alert")
+          form#form-new-result(action=`http://localhost:3000/new`, method="POST", enctype="multipart/form-data")
+            include _form_modal_new
+            .form-group
+              button.btn.btn-success(type="submit") Сохранить
+              | 
+              button.btn.btn-light(type="button", data-dismiss="modal") Закрыть
+    

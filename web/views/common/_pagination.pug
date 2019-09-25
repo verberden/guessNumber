@@ -1,0 +1,18 @@
+mixin pagination(presenter,{ maxBtnCount })
+  if presenter.perPage < presenter.count
+    - const { pagesCount, page } = presenter;
+    .row
+      .col-md-6.col-sm-5.col-xs-12
+        ul.pagination
+          li.page-item.previous.start(class={ 'disabled': (page-1) === 0 }, tabindex=(page-1) ? '' : "-1")
+            a.page-link(href=presenter.replaceUrlQueryParams({page: 1})) <<
+          li.page-item.previous(class={ 'disabled': (page-1) === 0 }, tabindex=(page-1) ? '' : "-1")
+            a.page-link(href=presenter.replaceUrlQueryParams({page: (page-1) ? page-1: 1})) <
+          - let { startPage, endPage } = presenter.paginationOffset(maxBtnCount, page, pagesCount)
+          while startPage <= endPage
+            li.page-item(class={ 'active': startPage === page })
+              a.page-link(href=presenter.replaceUrlQueryParams({page: startPage}))= startPage++
+          li.page-item.next(class={ 'disabled': ((page+1) > pagesCount) }, tabindex=((page+1) > pagesCount) ? '-1' : '')
+            a.page-link(href=presenter.replaceUrlQueryParams({page: (((page+1) > pagesCount) ? pagesCount : page+1)})) >
+          li.page-item.next.end(class={ 'disabled': ((page+1) > pagesCount) }, tabindex=((page+1) > pagesCount) ? '-1' : '')
+            a.page-link(href=presenter.replaceUrlQueryParams({page: pagesCount})) >>

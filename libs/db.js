@@ -15,7 +15,7 @@ module.exports = ({ env, config }) => {
 
       if (env !== 'development') options.logging = false;
 
-      const sequelize = new Sequelize(db.database, db.user, db.password, options);
+      const sequelize = new Sequelize(db.database, db.username, db.password, options);
 
       data[name] = sequelize;
     }

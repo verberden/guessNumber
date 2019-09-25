@@ -17,8 +17,9 @@ const env = process.env.NODE_ENV === undefined ? 'development' : process.env.NOD
 app.set('views', path.join(__dirname, 'web', 'views'));
 app.set('view engine', 'pug');
 
-/* const appClientFiles = [
-  'public/js/app.js',
+const appClientFiles = [
+  'public/src/modal-check-results.js',
+  'public/src/modal-results-new.js',
 ];
 const codeObject = {};
 appClientFiles.forEach((pathName) => {
@@ -27,17 +28,18 @@ appClientFiles.forEach((pathName) => {
 });
 
 const uglified = uglifyJs.minify(codeObject, { compress: false });
-fs.writeFile('public/src/app.min.js', uglified.code, (err) => {
+
+fs.writeFile('public/js/app.min.js', uglified.code, (err) => {
   if (err) {
     console.log(err);
   } else {
     console.log('Script generated and saved:', 'app.min.js');
   }
 });
-*/
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 

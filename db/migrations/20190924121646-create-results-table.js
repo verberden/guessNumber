@@ -10,7 +10,7 @@ module.exports = {
       allowNull: false,
       type: Sequelize.STRING,
     },
-    points: {
+    attempts: {
       allowNull: false,
       type: Sequelize.STRING,
     },
