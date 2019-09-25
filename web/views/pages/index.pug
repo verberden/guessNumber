@@ -31,7 +31,7 @@ block content
             span(aria-hidden="true") &times;
         .modal-body
           .alert.alert-success.d-none(role="alert")
-          form#form-new-result(action=`http://localhost:3000/new`, method="POST", enctype="multipart/form-data")
+          form#form-new-result(action=`/new`, method="POST", enctype="multipart/form-data")
             include _form_modal_new
             .form-group
               button.btn.btn-success(type="submit") Сохранить
