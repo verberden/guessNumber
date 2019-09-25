@@ -11,7 +11,6 @@ $(document).ready(function modalCheckResults() {
       success: function onSuccess(data) {
         $('#check-results').val(data.result);
         $('#check-results').parents('.row').removeClass('d-none');
-        console.log(data);
         if (data.status === true) {
           $('#result-new-modal').find('input[name="_csrf"]').val(data.csrfToken);
           $('#check-results').parents('.row').addClass('d-none');
