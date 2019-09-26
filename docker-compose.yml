@@ -19,7 +19,7 @@ services:
       - app-network
 
   nodejs:
-    image: verberden/test:v1
+    image: verberden/guess-number:v1
     container_name: nodejs
     restart: unless-stopped
     env_file: .env
