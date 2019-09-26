@@ -10,7 +10,15 @@ $(document).ready(function modalCheckResults() {
       dataType: 'json',
       data: $(this).serialize(),
       success: function onSuccess(data) {
-        window.location = data.location;
+        if (data.status) {
+          window.location = data.location;
+        } else {
+
+          $('#result-new-modal').find('.alert-danger')
+          .removeClass('d-none')
+          .empty()
+          .append(data.message);
+        }
       },
     });
   });

@@ -3,7 +3,7 @@ module.exports = ({ dbs: { guess_number: guessNumber, Sequelize } }) => {
     'Result',
     {
       name: Sequelize.STRING,
-      attempts: Sequelize.STRING,
+      attempts: Sequelize.INTEGER,
     },
     {
       tableName: 'results',

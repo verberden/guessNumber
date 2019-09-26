@@ -2,23 +2,17 @@ const {
   noun,
 } = require('plural-ru');
 const queryString = require('query-string');
+const Schems = require('../schems/index');
 
 const digits = 4;
 
 module.exports = ({ models }) => {
   const Result = models.result;
-  function generateRandomDigit({ inputMin = 0, inputMax = 9 }) {
-    let min = Number(inputMin);
-    let max = Number(inputMax);
-    if (Number.isNaN(min) || min < 0) {
-      min = 0;
-    }
 
-    if (Number.isNaN(max) || max > 9) {
-      max = 9;
-    }
-
-    return Math.floor(Math.random() * (max - min)) + min;
+  function generateRandomNumber() {
+    // eslint-disable-next-line no-restricted-properties
+    const number = Math.floor(Math.random() * Math.pow(10, (digits || 1)));
+    return number.toString().padStart(digits, '0');
   }
 
   function paginationOffset(maxBtnCount, page, pagesCount) {
@@ -77,14 +71,11 @@ module.exports = ({ models }) => {
   return {
     index: async (req, res, next) => {
       try {
-        let setNumber = req.session.number;
+        const setNumber = req.session.number;
 
         if (!setNumber) {
-          for (let i = 1; i <= digits; i++) {
-            setNumber = `${setNumber || ''}${generateRandomDigit({})}`;
-            req.session.number = setNumber;
-            req.session.attempts = 0;
-          }
+          req.session.number = generateRandomNumber();
+          req.session.attempts = 0;
         }
 
         res.render('pages/index', {
@@ -98,16 +89,9 @@ module.exports = ({ models }) => {
     },
     regenerate: async (req, res, next) => {
       try {
-        req.session.number = undefined;
         req.session.isGuessed = false;
-        let setNumber = req.session.number;
-
-        for (let i = 1; i <= digits; i++) {
-          setNumber = `${setNumber || ''}${generateRandomDigit({})}`;
-          req.session.number = setNumber;
-          req.session.attempts = 0;
-        }
-
+        req.session.number = generateRandomNumber();
+        req.session.attempts = 0;
         res.redirect('/');
       } catch (err) {
         next(err);
@@ -149,39 +133,53 @@ module.exports = ({ models }) => {
     },
     new: async (req, res, next) => {
       try {
-        const { name } = req.body.result;
-        if (name) {
-          await Result.create({
-            name,
-            attempts: req.session.attempts,
-          });
-        }
-        req.session.attempts = 0;
-        req.session.number = undefined;
-        req.session.isGuessed = false;
+        const { error, value } = Schems.name.validate(req.body.result);
 
-        res.json({ location: '/results' });
+        if (!error) {
+          const { name } = value;
+          if (name) {
+            await Result.create({
+              name: name.trim(),
+              attempts: req.session.attempts,
+            });
+          }
+          req.session.attempts = 0;
+          req.session.number = undefined;
+          req.session.isGuessed = false;
+
+          res.json({ status: true, location: '/results' });
+        } else {
+          res.json({ status: false, message: error.details[0].message });
+        }
       } catch (err) {
         next(err);
       }
     },
     check: async (req, res, next) => {
       try {
-        if (req.session.isGuessed) {
-          res.json({ status: true, message: `Вы угадали загаданное число за ${req.session.attempts} ${noun(+req.session.attempts, 'попытку', 'попытки', 'попыток')}`, csrfToken: req.csrfToken() });
-        } else if (req.session.number) {
+        const { error } = Schems.number.validate(req.body);
+
+        if (!error && req.session.isGuessed) {
+          res.json({ status: true, message: `Вы угадали загаданное число за ${req.session.attempts} ${noun(+req.session.attempts, 'попытку', 'попытки', 'попыток')}` });
+        } else if (!error && req.session.number) {
           req.session.attempts += 1;
-          const numberDigits = req.session.number.split('');
+          const generatedDigits = req.session.number.split('');
           const inputDigits = req.body.guessNumber.split('');
           const matches = {};
-          const results = ['X', 'X', 'X', 'X'];
+          const results = [];
+          let successResult = '';
+          for (let i = 0; i < digits; i++) {
+            results.push('X');
+            successResult += 'B';
+          }
+
           inputDigits.forEach((digit) => {
-            const indexies = numberDigits.reduce(
+            const indexies = generatedDigits.reduce(
               (acc, el, i) => (el === digit ? [...acc, i] : acc), [],
             );
             if (indexies.length) {
               matches[digit] = {
-                indexies, // индексы вхождений
+                indexies, // сами индексы вхождений
                 count: indexies.length, // количество вхождений
               };
             }
@@ -208,17 +206,18 @@ module.exports = ({ models }) => {
           const result = results.join('');
           let status = false;
           let message = '';
-          if (result === 'BBBB') {
+
+          if (result === successResult) {
             req.session.isGuessed = true;
             status = true;
             message = `Вы угадали загаданное число за ${req.session.attempts} ${noun(+req.session.attempts, 'попытку', 'попытки', 'попыток')}`;
           }
 
           res.json({
-            result, status, message, csrfToken: req.csrfToken(),
+            result, status, message,
           });
         } else {
-          res.redirect('/');
+          res.json({ status: false });
         }
       } catch (err) {
         next(err);
