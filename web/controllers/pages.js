@@ -135,7 +135,7 @@ module.exports = ({ models }) => {
       try {
         const { error, value } = Schems.name.validate(req.body.result);
 
-        if (!error) {
+        if (!error && req.session.isGuessed) {
           const { name } = value;
           if (name) {
             await Result.create({
