@@ -9,6 +9,8 @@ $(document).ready(function modalCheckResults() {
       dataType: 'json',
       data: $(this).serialize(),
       success: function onSuccess(data) {
+        $('#guess-number-input').removeClass('is-invalid');
+        $('#guess-number-invalid').empty();
         if (data.result) {
           $('#check-results').val(data.result);
           $('#check-results').parents('.row').removeClass('d-none');
@@ -21,6 +23,11 @@ $(document).ready(function modalCheckResults() {
             .empty()
             .append(data.message);
           $('#result-new-modal').modal('show');
+        }
+
+        if (data.status === false && data.message) {
+          $('#guess-number-input').addClass('is-invalid');
+          $('#guess-number-invalid').append(data.message);
         }
       },
     });

@@ -6,3 +6,8 @@
 .input__number_check {
     letter-spacing: 9px;
 }
+
+.form-control.is-invalid {
+    background-image: none;
+    padding-right: unset;
+}

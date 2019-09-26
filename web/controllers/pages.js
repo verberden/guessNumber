@@ -217,7 +217,7 @@ module.exports = ({ models }) => {
             result, status, message,
           });
         } else {
-          res.json({ status: false });
+          res.json({ status: false, message: error ? error.details[0].message : 'Oops something goes wrong' });
         }
       } catch (err) {
         next(err);
