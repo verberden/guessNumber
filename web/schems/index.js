@@ -10,8 +10,9 @@ module.exports = {
   }).unknown(true),
   number: Joi.object({
     guessNumber: Joi.number()
-      .positive()
+      .min(0)
       .less(10000)
+      .unsafe()
       .required(),
   }).unknown(true),
 };
